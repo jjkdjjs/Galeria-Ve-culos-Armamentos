@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Galeria de Veículos e Armamentos — Básico</title>
+  <style>
+    /* ===== Estilo geral ===== */
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      color: #111;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+    }
+    header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+    header .subtitle {
+      font-size: 13px;
+      color: #666;
+    }
+    nav a {
+      margin-left: 12px;
+      color: #0b63a8;
+      text-decoration: none;
+    }
+
+    /* ===== Controles ===== */
+    .controls {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+      align-items: center;
+    }
+
+    .controls input[type="search"], .controls button, .select .selected {
+      padding: 8px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccd6dd;
+      font-size: 14px;
+      background: #fff;
+      color: #111;
+      cursor: pointer;
+    }
+
+    .controls input[type="search"] {
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .controls button {
+      background: #0b63a8;
+      color: #fff;
+      border: none;
+      transition: 0.3s;
+    }
+    .controls button:hover {
+      background: #095391;
+    }
+
+    /* ===== Dropdown ===== */
+    .select {
+      position: relative;
+      display: inline-block;
+      min-width: 180px;
+    }
+    .select .selected {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #2a2f3b;
+      color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      user-select: none;
+    }
+    .select .arrow {
+      width: 3px;
+      height: 3px;
+      border: solid #fff;
+      border-width: 0 2px 2px 0;
+      padding: 2px;
+      transform: rotate(45deg);
+      transition: 0.3s;
+      margin-left: 10px;
+    }
+    .select.open .arrow {
+      transform: rotate(-135deg);
+    }
+
+    .select .options {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #2a2f3b;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 9999;
+    }
+    .select.open .options {
+      display: block;
+    }
+    .select .option {
+      padding: 8px 10px;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .select .option:hover {
+      background: #323741;
+    }
+
+    /* ===== Grid de cards ===== */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #e1e8ee;
+      border-radius: 6px;
+      padding: 10px;
+      z-index: 1;
+    }
+    .card img {
+      width: 100%;
+      height: 140px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+    .card h3 {
+      margin: 8px 0 4px;
+      font-size: 16px;
+    }
+    .card p {
+      margin: 4px 0;
+      color: #555;
+      font-size: 14px;
+    }
+    .tech {
+      background: #fafbfc;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #eef2f5;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: #666;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media(max-width:480px){
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Galeria de Veículos e Armamentos</h1>
+        <div class="subtitle">Catálogo: tanques, aviões, navios e helicópteros</div>
+      </div>
+      <nav>
+        <a href="index.html">Início</a>
+        <a href="#galeria">Galeria</a>
+        <a href="#sobre">Sobre</a>
+      </nav>
+    </header>
+
+    <section class="controls">
+      <input id="q" type="search" placeholder="Pesquisar nome ou país" />
+      
+      <div class="select" id="dropdown">
+        <div class="selected">Todos os tipos <span class="arrow"></span></div>
+        <div class="options">
+          <div class="option" data-value="">Todos os tipos</div>
+          <div class="option" data-value="tank">Tanques</div>
+          <div class="option" data-value="aircraft">Aviões</div>
+          <div class="option" data-value="ship">Navios</div>
+          <div class="option" data-value="helicopter">Helicópteros</div>
+        </div>
+      </div>
+
+      <button id="clear">Limpar</button>
+    </section>
+
+    <main id="galeria">
+      <div class="grid" id="catalog">
+
+        <article class="card" data-type="tank" data-name="T-90">
+          <img src="https://preview.redd.it/your-non-political-opinion-about-the-t-90m-v0-8kfl6bmnwede1.jpg?width=640&crop=smart&auto=webp&s=b00c8baf59f54d8cb892b4c594382a9b8b81983b" alt="Tanque">
+          <h3>T-90</h3>
+          <p style="font-size:13px;color:#777">País: Rússia • Introdução: 1992</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 46 t</li>
+              <li>Tripulação: 3</li>
+              <li>Armamento: Canhão 125 mm</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="F-16">
+          <img src="https://www.sociedademilitar.com.br/wp-content/uploads/2024/12/f-16.png" alt="Avião">
+          <h3>F-16</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1978</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 2</li>
+              <li>Tripulação: 1</li>
+              <li>Armamento: Mísseis ar-ar</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="Eurofighter Typhoon">
+          <img src="https://thecradle-main.oss-eu-central-1.aliyuncs.com/public/articles/5cf4fede-55cf-11f0-bd55-00163e02c055.webp" alt="Avião">
+          <h3>Eurofighter Typhoon</h3>
+          <p style="font-size:13px;color:#777">País: Europa • Introdução: 2003</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 2</li>
+              <li>Tripulação: 1</li>
+              <li>Armamento: Mísseis ar-ar, bombas guiadas</li>
+              <li>Curiosidade: Desenvolvido por Alemanha, Itália, Reino Unido e Espanha.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="Dassault Rafale">
+          <img src="https://www.aereo.jor.br/wp-content/uploads//2024/01/Dassault-Rafale.jpg" alt="Avião">
+          <h3>Dassault Rafale</h3>
+          <p style="font-size:13px;color:#777">País: França • Introdução: 2001</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 1,8</li>
+              <li>Tripulação: 1-2</li>
+              <li>Armamento: Mísseis, canhões, bombas guiadas</li>
+              <li>Curiosidade: Capaz de operar tanto em porta-aviões quanto em terra.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="B-2 Spirit">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/B-2_Spirits_on_Deployment_to_Indo-Asia-Pacific.jpg/330px-B-2_Spirits_on_Deployment_to_Indo-Asia-Pacific.jpg" alt="Avião">
+          <h3>B-2 Spirit</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1997</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 0,95</li>
+              <li>Tripulação: 2</li>
+              <li>Armamento: Bombas nucleares e convencionais</li>
+              <li>Curiosidade: Totalmente furtivo, difícil de detectar por radares.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="MiG-29">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/VVS_100th_IMG_0691_%287727464290%29_%28cropped%29.jpg/330px-VVS_100th_IMG_0691_%287727464290%29_%28cropped%29.jpg" alt="Avião">
+          <h3>MiG-29</h3>
+          <p style="font-size:13px;color:#777">País: Rússia • Introdução: 1983</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 2,25</li>
+              <li>Tripulação: 1</li>
+              <li>Armamento: Canhão 30 mm, mísseis ar-ar</li>
+              <li>Curiosidade: Extremamente ágil em combate aéreo.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="Lockheed C-130 Hercules">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/c/cc/Lockheed_C-130_Hercules.jpg" alt="Avião">
+          <h3>Lockheed C-130 Hercules</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1956</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: 592 km/h</li>
+              <li>Tripulação: 5</li>
+              <li>Armamento: Nenhum (aeronave de transporte)</li>
+              <li>Curiosidade: Amplamente usado em missões de carga e humanitárias.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="F-22">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Lockheed_Martin_F-22A_Raptor_JSOH.jpg/960px-Lockheed_Martin_F-22A_Raptor_JSOH.jpg" alt="Avião">
+          <h3>F-22 Raptor</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 2005</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 2</li>
+              <li>Tripulação: 1</li>
+              <li>Armamento: Mísseis ar-ar, bombas guiadas</li>
+              <li>Curiosidade: Primeiro caça de 5ª geração em operação no mundo.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="Su-57">
+          <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiWH6mURjwFolze2gA7oqPySCFveLS82FexCRHYInZLuQXqyWCPlkggAv5VFfq2mGBtINL1Svf4iNyxpPKGnBQrabDm8BpcMJyDJC-QdewuqSA5mOw0cQiarUxB0ACHeiGv6YEu4zlO-Ls/s1600/SU-57+VID+2.jpg" alt="Avião">
+          <h3>Su-57</h3>
+          <p style="font-size:13px;color:#777">País: Rússia • Introdução: 2020</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 2</li>
+              <li>Tripulação: 1</li>
+              <li>Armamento: Canhão 30 mm, mísseis ar-ar/ar-terra</li>
+              <li>Curiosidade: Possui design furtivo e supermanobrabilidade.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="aircraft" data-name="Mirage 2000">
+          <img src="https://8a17c282.delivery.rocketcdn.me/wp-content/uploads/2019/08/Mirage2000-5-de-lArmee-de-lair-hellenique.jpg" alt="Avião">
+          <h3>Mirage 2000</h3>
+          <p style="font-size:13px;color:#777">País: França • Introdução: 1984</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade: Mach 2,2</li>
+              <li>Tripulação: 1</li>
+              <li>Armamento: Mísseis ar-ar, bombas guiadas</li>
+              <li>Curiosidade: Usado por mais de 9 países, inclusive o Brasil.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="Leopard 2A7">
+          <img src="https://staticfiles.warthunder.com/upload/image/0_2023/12_December/Leopard/460x259_05_leopard_2a7v_a36102d1d046fd890115b2e413756f68.jpg" alt="Tanque">
+          <h3>Leopard 2A7</h3>
+          <p style="font-size:13px;color:#777">País: Alemanha • Introdução: 2014</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 66 t</li>
+              <li>Tripulação: 4</li>
+              <li>Armamento: Canhão 120 mm</li>
+              <li>Curiosidade: Considerado um dos tanques mais avançados do mundo.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="Challenger 2">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/3/30/Challenger_2_Main_Battle_Tank_patrolling_outside_Basra%2C_Iraq_MOD_45148325.jpg" alt="Tanque">
+          <h3>Challenger 2</h3>
+          <p style="font-size:13px;color:#777">País: Reino Unido • Introdução: 1994</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 62 t</li>
+              <li>Tripulação: 4</li>
+              <li>Armamento: Canhão 120 mm</li>
+              <li>Curiosidade: Reconhecido por sua blindagem extremamente resistente.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="Challenger 2">
+          <img src="https://www.forte.jor.br/wp-content/uploads/2016/03/T-14-Armata-1.jpg" alt="Tanque">
+          <h3>T-14 Armata</h3>
+          <p style="font-size:13px;color:#777">País: Rússia • Introdução: 2015</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 48 t</li>
+              <li>Tripulação: 3</li>
+              <li>Armamento: Canhão 125 mm, metralhadoras</li>
+              <li>Curiosidade: Primeiro tanque com tripulação totalmente protegida em cápsula blindada.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="K2 Black Panther">
+          <img src="https://cdn.net-maquettes.com/2024/12/K2-Black-Panther.webp" alt="Tanque">
+          <h3>K2 Black Panther</h3>
+          <p style="font-size:13px;color:#777">País: Coreia do Sul • Introdução: 2014</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 55 t</li>
+              <li>Tripulação: 3</li>
+              <li>Armamento: Canhão 120 mm</li>
+              <li>Curiosidade: Possui sistemas de mira avançados e suspensão automática.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="Leclerc">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSSRr9nQuPFXrr_An0X44qOWzvw1g0n5zaTxA&s" alt="Tanque">
+          <h3>Leclerc</h3>
+          <p style="font-size:13px;color:#777">País: França • Introdução: 1992</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 56 t</li>
+              <li>Tripulação: 3</li>
+              <li>Armamento: Canhão 120 mm</li>
+              <li>Curiosidade: Considerado muito rápido para um tanque principal de batalha.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="Type 99">
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRi6etHMnPtSHe24ayoeybRkdk0bSRQQ8gFBg&s" alt="Tanque">
+          <h3>Type 99</h3>
+          <p style="font-size:13px;color:#777">País: China • Introdução: 2001</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 58 t</li>
+              <li>Tripulação: 3</li>
+              <li>Armamento: Canhão 125 mm</li>
+              <li>Curiosidade: Inclui blindagem reativa explosiva e sistemas de fogo automatizados.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="tank" data-name="M1A2 Abrams">
+          <img src="https://static.encyclopedia.warthunder.com/images/us_m1a2_abrams.png" alt="Tanque">
+          <h3>M1A2 Abrams</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1992</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Peso: 62 t</li>
+              <li>Tripulação: 4</li>
+              <li>Armamento: Canhão 120 mm</li>
+              <li>Curiosidade: Utiliza blindagem de urânio empobrecido.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="Porta-aviões Nimitz">
+          <img src="https://www.naval.com.br/blog/wp-content/uploads/2020/12/USS-Nimitz-2.jpg" alt="Navio">
+          <h3>Porta-aviões Nimitz</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1975</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 100 mil t</li>
+              <li>Tripulação: 5.000+</li>
+              <li>Curiosidade: Transporta cerca de 90 aeronaves.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="USS Gerald R. Ford">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/5/52/USS_Gerald_R._Ford_%28CVN-78%29_underway_in_the_Atlantic_Ocean_on_9_October_2022_%28221009-N-TL968-1248%29.JPG" alt="Navio">
+          <h3>USS Gerald R. Ford</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 2007</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 100 mil t</li>
+              <li>Tripulação: 4.500</li>
+              <li>Curiosidade: Maior e mais moderno porta-aviões americano.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="HMS Queen Elizabeth">
+          <img src="https://www.naval.com.br/blog/wp-content/uploads/2019/10/Ca%C3%A7as-F-35B-do-Reino-Unido-no-HMS-Queen-Elizabeth-3.jpg" alt="Navio">
+          <h3>HMS Queen Elizabeth</h3>
+          <p style="font-size:13px;color:#777">País: Reino Unido • Introdução: 2017</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 65.000 t</li>
+              <li>Tripulação: 1.600</li>
+              <li>Curiosidade: Porta-aviões de nova geração, capaz de operar caças F-35B.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="Charles de Gaulle">
+          <img src="https://www.navalnews.com/wp-content/uploads/2019/02/A-Record-35-Aircraft-Aboard-French-Aircraft-Carrier-Charles-de-Gaulle-1.jpg" alt="Navio">
+          <h3>Charles de Gaulle</h3>
+          <p style="font-size:13px;color:#777">País: França • Introdução: 2001</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 42.000 t</li>
+              <li>Tripulação: 1.950</li>
+              <li>Curiosidade: Único porta-aviões francês, movido a energia nuclear.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="Kirov">
+          <img src="https://imageio.forbes.com/specials-images/imageserve/60749fe714045e87ee0f5818/0x0.jpg?format=jpg&crop=1679,787,x0,y169,safe&height=900&width=1600&fit=bounds" alt="Navio">
+          <h3>Kirov</h3>
+          <p style="font-size:13px;color:#777">País: Rússia • Introdução: 1980</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 28.000 t</li>
+              <li>Tripulação: 700</li>
+              <li>Curiosidade: Um dos maiores cruzadores de batalha do mundo.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="Fregata FREMM">
+          <img src="https://www.naval.com.br/blog/wp-content/uploads/2013/07/FREMM-Carlo-Bergamini-1280x856.jpg" alt="Navio">
+          <h3>Fregata FREMM</h3>
+          <p style="font-size:13px;color:#777">País: Itália/França • Introdução: 2012</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 6.000 t</li>
+              <li>Tripulação: 145</li>
+              <li>Curiosidade: Projetada para guerra anti-submarina e operações multifuncionais.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="ship" data-name="Fragata Type 23">
+          <img src="https://cdn-defesaaereanaval.nuneshost.com/wp-content/uploads/2013/10/HMS-Westminster-F237-Type-23.jpg" alt="Navio">
+          <h3>Fragata Type 23</h3>
+          <p style="font-size:13px;color:#777">País: Reino Unido • Introdução: 1989</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Deslocamento: 4.900 t</li>
+              <li>Tripulação: 185</li>
+              <li>Curiosidade: Especializada em guerra anti-submarina.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="AH-64 Apache">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/6/66/AH-64D_Apache_Longbow.jpg" alt="Helicoptero">
+          <h3>AH-64 Apache</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1986</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 293 km/h</li>
+              <li>Tripulação: 2</li>
+              <li>Armamento: Canhão 30 mm, foguetes, mísseis Hellfire</li>
+              <li>Curiosidade: Usado em praticamente todos os conflitos dos EUA desde 1990.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="Sikorsky UH-60 Black Hawk">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/National-Guard-UH-60-Black-Hawk-operations-at-Fort-McCoy.jpg" alt="Helicoptero">
+          <h3>Sikorsky UH-60 Black Hawk</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1979</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 355 km/h</li>
+              <li>Tripulação: 4</li>
+              <li>Armamento: Metralhadoras, foguetes</li>
+              <li>Curiosidade: Muito usado em operações de transporte e resgate.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="Eurocopter Tiger">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Eurocopter_LE_TIGRE_-_Flickr_-_besopha.jpg/1200px-Eurocopter_LE_TIGRE_-_Flickr_-_besopha.jpg" alt="Helicoptero">
+          <h3>Eurocopter Tiger</h3>
+          <p style="font-size:13px;color:#777">País: França/Alemanha • Introdução: 2003</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 315 km/h</li>
+              <li>Tripulação: 2</li>
+              <li>Armamento: Canhões, mísseis guiados</li>
+              <li>Curiosidade: Helicóptero de ataque moderno, ágil e furtivo.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="CH-47 Chinook">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a0/CH-47_assigned_to_3rd_General_Support_Aviation_Battalion%2C_82nd_Combat_Aviation_Brigade.jpg" alt="Helicoptero">
+          <h3>CH-47 Chinook</h3>
+          <p style="font-size:13px;color:#777">País: EUA • Introdução: 1962</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 315 km/h</li>
+              <li>Tripulação: 3</li>
+              <li>Armamento: Metralhadoras</li>
+              <li>Curiosidade: Possui dois rotores e pode transportar até 55 soldados ou carga pesada.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="Kamov Ka-52 Alligator">
+          <img src="https://odin.tradoc.army.mil/dotcms/dA/6db9176720ab98a666c911c8162e7d7c/fileAsset/Ka52_%28A%2910ba.jpg" alt="Helicoptero">
+          <h3>Kamov Ka-52 Alligator</h3>
+          <p style="font-size:13px;color:#777">País: Rússia • Introdução: 2011</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 300 km/h</li>
+              <li>Tripulação: 2</li>
+              <li>Armamento: Canhão, mísseis antitanque</li>
+              <li>Curiosidade: Possui rotores coaxiais, dispensando rotor de cauda.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="AgustaWestland AW101">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/AgustaWestland_HH-101A_Caesar_%28cropped%29.jpg/1200px-AgustaWestland_HH-101A_Caesar_%28cropped%29.jpg" alt="Helicoptero">
+          <h3>AgustaWestland AW101</h3>
+          <p style="font-size:13px;color:#777">País: Itália/Reino Unido • Introdução: 2000</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 309 km/h</li>
+              <li>Tripulação: 4</li>
+              <li>Armamento: Pode ser configurado para ataque ou transporte</li>
+              <li>Curiosidade: Utilizado para operações de busca e salvamento em mar aberto.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="card" data-type="helicopter" data-name="Mil Mi-24 Hind">
+          <img src="https://www.super-hobby.pt/zdjecia/0/8/0/43076_rd.jpg" alt="Helicoptero">
+          <h3>Mil Mi-24 Hind</h3>
+          <p style="font-size:13px;color:#777">País: URSS/Rússia • Introdução: 1972</p>
+          <div class="tech">
+            <strong>Ficha técnica</strong>
+            <ul style="margin:6px 0 0;padding-left:18px">
+              <li>Velocidade máxima: 335 km/h</li>
+              <li>Tripulação: 2 + 8 soldados transportados</li>
+              <li>Armamento: Canhão 23 mm, foguetes, mísseis guiados</li>
+              <li>Curiosidade: Apelidado de “Tanque Voador” por sua blindagem.</li>
+            </ul>
+          </div>
+        </article>
+       </div>
+    </main>
+
+    <footer>
+      © <span id="year">2025</span> — Uso educativo
+    </footer>
+  </div>
+
+  <script>
+    const q = document.getElementById('q');
+    const catalog = document.getElementById('catalog');
+    const clear = document.getElementById('clear');
+    const dropdown = document.getElementById('dropdown');
+    const selected = dropdown.querySelector('.selected');
+    const options = dropdown.querySelectorAll('.option');
+
+    let selectedType = "";
+
+    // Toggle dropdown
+    selected.addEventListener('click', () => {
+      dropdown.classList.toggle('open');
+    });
+
+    // Escolher opção
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        selected.innerHTML = option.textContent + ' <span class="arrow"></span>';
+        selectedType = option.dataset.value;
+        dropdown.classList.remove('open');
+        applyFilter();
+      });
+    });
+
+    // Fechar dropdown se clicar fora
+    document.addEventListener('click', e => {
+      if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+
+    // Filtrar cards
+    function applyFilter() {
+      const text = q.value.trim().toLowerCase();
+      document.querySelectorAll('.card').forEach(card => {
+        const name = card.dataset.name.toLowerCase();
+        const matchText = !text || name.includes(text) || card.innerText.toLowerCase().includes(text);
+        const matchType = !selectedType || card.dataset.type === selectedType;
+        card.style.display = (matchText && matchType) ? 'block' : 'none';
+      });
+    }
+
+    q.addEventListener('input', applyFilter);
+    clear.addEventListener('click', () => {
+      q.value = '';
+      selectedType = '';
+      selected.innerHTML = 'Todos os tipos <span class="arrow"></span>';
+      applyFilter();
+    });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
