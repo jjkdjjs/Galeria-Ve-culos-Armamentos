@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Galeria de Veículos e Armamentos</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, Helvetica, sans-serif; background:#f4f6f8; color:#111; line-height:1.5; }
+  .container { max-width:1200px; margin:0 auto; padding:20px; }
+
+  /* Header */
+  header { display:flex; justify-content:space-between; align-items:center; padding:20px 0; }
+  header h1 { font-size:26px; color:#0b63a8; }
+  nav a { margin-left:15px; text-decoration:none; color:#0b63a8; font-weight:bold; transition:.3s; }
+  nav a:hover { color:#034a6b; }
+
+  /* Banner */
+  #inicio { background:url('https://via.placeholder.com/1200x400?text=Galeria+Militar') no-repeat center center; background-size:cover; border-radius:10px; color:#fff; padding:100px 20px; text-align:center; margin-bottom:30px; position:relative; }
+  #inicio::after { content:""; position:absolute; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5); border-radius:10px; }
+  #inicio div { position:relative; z-index:1; }
+  #inicio h2 { font-size:42px; margin-bottom:15px; }
+  #inicio p { font-size:20px; margin-bottom:20px; }
+  #inicio a { padding:12px 25px; background:#0b63a8; color:#fff; text-decoration:none; border-radius:5px; font-weight:bold; transition:.3s; }
+  #inicio a:hover { background:#034a6b; }
+
+  /* Seções */
+  section { margin-bottom:40px; }
+  section h3 { color:#0b63a8; margin-bottom:15px; }
+  section p, section li { margin-bottom:10px; font-size:15px; color:#333; }
+
+  ul { margin-left:20px; }
+
+  /* Cards da galeria */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:20px; margin-top:20px; }
+  .card { background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 4px 8px rgba(0,0,0,0.1); transition:.3s; }
+  .card:hover { transform:translateY(-5px); box-shadow:0 8px 16px rgba(0,0,0,0.2); }
+  .card img { width:100%; height:180px; object-fit:cover; }
+  .card-content { padding:15px; }
+  .card-content h4 { margin-bottom:6px; color:#0b63a8; font-size:16px; }
+  .card-content p { font-size:14px; color:#555; margin-bottom:6px; }
+  .tech { background:#f1f3f5; padding:8px; border-radius:5px; font-size:13px; margin-bottom:8px; }
+  .tech ul { padding-left:18px; }
+
+  /* Comparações */
+  .comparacao { background:#e1e8ee; padding:12px; border-radius:8px; margin-bottom:12px; font-size:14px; }
+
+  /* Footer */
+  footer { text-align:center; padding:20px; font-size:14px; color:#666; margin-top:30px; border-top:1px solid #ddd; }
+
+  @media(max-width:768px){
+    header { flex-direction:column; align-items:flex-start; gap:10px; }
+    #inicio h2 { font-size:32px; }
+    #inicio p { font-size:16px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>Galeria Militar</h1>
+    <nav>
+      <a href="#inicio">Início</a>
+      <a href="#sobre">Sobre</a>
+      <a href="#glossario">Glossário</a>
+      <a href="#comparacoes">Comparações</a>
+      <a href="galeria.html">Galeria</a>
+    </nav>
+  </header>
+
+  <!-- Banner -->
+  <section id="inicio">
+    <div>
+      <h2>Bem-vindo à Galeria de Veículos e Armamentos</h2>
+      <p>Explore tanques, aviões, helicópteros e navios militares com informações detalhadas, ficha técnica e curiosidades.</p>
+      <a href="#galeria">Ver a Galeria</a>
+    </div>
+  </section>
+
+  <!-- Sobre a galeria -->
+  <section id="sobre">
+    <h3>Sobre a Galeria</h3>
+    <p>Esta galeria tem como objetivo reunir informações sobre veículos militares de diversas épocas e países. Aqui você pode aprender sobre a evolução tecnológica, diferentes funções de cada veículo e curiosidades históricas.</p>
+    <p>O conteúdo é organizado por categorias, e cada veículo possui ficha técnica e curiosidades para facilitar o estudo e o entendimento do público.</p>
+  </section>
+
+  <!-- Categorias de veículos -->
+  <section id="categorias">
+    <h3>Categorias de Veículos</h3>
+    <ul>
+      <li><strong>Tanques:</strong> Blindados terrestres que atuam no combate direto e apoio às tropas.</li>
+      <li><strong>Aviões:</strong> Incluem caças, bombardeiros e transporte, utilizados em superioridade aérea, ataque e logística.</li>
+      <li><strong>Helicópteros:</strong> Veículos versáteis usados em transporte, ataque e resgate.</li>
+      <li><strong>Navios:</strong> Porta-aviões, cruzadores, fragatas e submarinos, usados em guerra naval e projeção de força.</li>
+    </ul>
+  </section>
+
+  <!-- Glossário -->
+  <section id="glossario">
+    <h3>Glossário de Termos</h3>
+    <ul>
+      <li><strong>Mach:</strong> Velocidade relativa à do som. Mach 1 = velocidade do som, Mach 2 = 2x velocidade do som.</li>
+      <li><strong>Tonelagem:</strong> Peso total do veículo ou navio.</li>
+      <li><strong>Tripulação:</strong> Pessoas necessárias para operar o veículo.</li>
+      <li><strong>Armamento:</strong> Tipos de armas (canhões, mísseis, metralhadoras).</li>
+      <li><strong>Deslocamento (navios):</strong> Peso da água deslocada pelo navio, indicando seu tamanho.</li>
+    </ul>
+  </section>
+
+  <!-- Comparações -->
+  <section id="comparacoes">
+    <h3>Comparações Curiosas</h3>
+    <div class="comparacao"><strong>USS Nimitz:</strong> Equivale a cerca de 1000 elefantes adultos em peso.</div>
+    <div class="comparacao"><strong>Tanque T-90:</strong> Comparável a 10 carros de passeio em massa.</div>
+    <div class="comparacao"><strong>F-16:</strong> Pode atingir Mach 2, mais rápido que o dobro de um jato comercial.</div>
+    <div class="comparacao"><strong>AH-64 Apache:</strong> Potência de ataque semelhante a uma pequena artilharia móvel.</div>
+  </section>
+
+  <!-- Galeria -->
+  <section id="galeria">
+    <h3>Veículos em Destaque</h3>
+    <div class="grid">
+      <!-- Aqui você pode colocar os cards detalhados de tanques, aviões, helicópteros e navios como nos exemplos anteriores -->
+    </div>
+  </section>
+
+
+  <footer>
+    © <span id="year">2025</span> — Uso educativo
+  </footer>
+</div>
+
+<script>
+  document.getElementById('year').innerText = new Date().getFullYear();
+</script>
+</body>
+</html>
